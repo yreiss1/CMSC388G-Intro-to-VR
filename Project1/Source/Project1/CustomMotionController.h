@@ -4,25 +4,23 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "HeadMountedDisplayFunctionLibrary.h"
 #include "CustomMotionController.generated.h"
 
 
+
 USTRUCT(Blueprintable)
-struct FNavMeshNode
+struct FTeleportDestinationTransform
 {
 	GENERATED_USTRUCT_BODY()
 
-	UPROPERTY(BlueprintReadWrite, Category = "Nav Mesh Result")
-		bool bSuccess;
-	UPROPERTY(BlueprintReadWrite, Category = "Nav Mesh Result")
-		TArray<FVector> TracePoints;
-	UPROPERTY(BlueprintReadWrite, Category = "Nav Mesh Result")
-		FVector NavMeshLocation;
-	UPROPERTY(BlueprintReadWrite, Category = "Nav Mesh Result")
-		FVector TraceLocation;
+	UPROPERTY(BlueprintReadWrite, Category = "Transform")
+		FVector DestinationLocation;
+	UPROPERTY(BlueprintReadWrite, Category = "Transform")
+		FRotator DestinationRotation;
 };
 
-UCLASS()
+UCLASS(Abstract)
 class PROJECT1_API ACustomMotionController : public AActor
 {
 	GENERATED_BODY()
@@ -38,7 +36,25 @@ public:
 		AActor* GetActorNearHand();
 
 	UFUNCTION(BlueprintCallable, Category = "Teleportation")
-		FNavMeshNode TraceTeleportDestination();
+		virtual FTeleportDestinationTransform GetTeleportDestination(); /*PURE_VIRTUAL(ACustomMotionController, UStaticMeshComponent * TeleportCylinder = FindComponentByClass<UStaticMeshComponent>();
+	FVector TeleportLocation = TeleportCylinder->GetComponentLocation();
+
+	FVector DevicePosition;
+	FRotator DeviceRotation;
+	UHeadMountedDisplayFunctionLibrary::GetOrientationAndPosition(DeviceRotation, DevicePosition);
+	const FVector IgnoreHeightDifferenceVector = FVector(DevicePosition.X, DevicePosition.Y, 0);
+
+	FRotator TeleportRotator;
+	FVector RotatedVector = TeleportRotator.RotateVector(IgnoreHeightDifferenceVector);
+
+	FVector DiffFromCamera = TeleportLocation - RotatedVector;
+
+	FTeleportDestinationTransform TeleportDestinationTransform;
+
+	TeleportDestinationTransform.DestinationLocation = DiffFromCamera;
+	TeleportDestinationTransform.DestinationRotation = TeleportRotator;
+
+	return TeleportDestinationTransform;);*/
 
 };
 

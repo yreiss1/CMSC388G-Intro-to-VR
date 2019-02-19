@@ -1,6 +1,12 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "CustomMotionController.h"
+#include "Components/SplineMeshComponent.h"
+#include "Engine/Engine.h"
+#include "Kismet/KismetSystemLibrary.h"
+#include "Kismet/GameplayStatics.h"
+#include "HeadMountedDisplayFunctionLibrary.h"
+#include "Kismet/KismetMathLibrary.h"
 
 // Sets default values
 ACustomMotionController::ACustomMotionController()
@@ -20,8 +26,27 @@ AActor* ACustomMotionController::GetActorNearHand()
 	return nullptr;
 }
 
-FNavMeshNode ACustomMotionController::TraceTeleportDestination()
+//Blueprint function that is converted to C++ for your convenience.
+FTeleportDestinationTransform ACustomMotionController::GetTeleportDestination()
 {
-	//TODO - Do something other than return empty struct
-	return FNavMeshNode();
+	UStaticMeshComponent* TeleportCylinder = FindComponentByClass<UStaticMeshComponent>();
+	FVector TeleportLocation = TeleportCylinder->GetComponentLocation();
+
+	FVector DevicePosition;
+	FRotator DeviceRotation;
+	UHeadMountedDisplayFunctionLibrary::GetOrientationAndPosition(DeviceRotation, DevicePosition);
+	const FVector IgnoreHeightDifferenceVector = FVector(DevicePosition.X, DevicePosition.Y, 0);
+
+	FRotator TeleportRotator;
+	FVector RotatedVector = TeleportRotator.RotateVector(IgnoreHeightDifferenceVector);
+
+	FVector DiffFromCamera = TeleportLocation - RotatedVector;
+
+	FTeleportDestinationTransform TeleportDestinationTransform;
+
+	TeleportDestinationTransform.DestinationLocation = DiffFromCamera;
+	TeleportDestinationTransform.DestinationRotation = TeleportRotator;
+
+	return TeleportDestinationTransform;
 }
+
