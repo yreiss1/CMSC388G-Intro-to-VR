@@ -17,7 +17,7 @@ ACustomMotionController::ACustomMotionController()
 
 void ACustomMotionController::ClearArc()
 {
-	FindComponentByClass<SplineMesh
+	FindComponentByClass<SplineMeshComponent>();
 		
 	// Clear Arc
 	ArcPoints.Empty();
