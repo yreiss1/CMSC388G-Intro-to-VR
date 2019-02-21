@@ -20,14 +20,25 @@ APickupCube::APickupCube()
 	MeshComponent->SetRelativeScale3D(FVector(0.2f));
 
 	//TODO - Set up Physics on the cube.
+	
+	MeshComponent->SetSimulatePhysics(true);
 }
 
 void APickupCube::Pickup_Implementation(USceneComponent* AttachTo)
 {
 	//TODO - Implement Pickup call
+	StaticMeshComponent->SetSimulatePhysics( false );
+	USceneComponent *Root = GetRootComponent();
+
+	FAttachmentTransformRules AttachmentTransformRules( EAttachmentRule::KeepWorld, false );
+	Root->AttachToComponent( AttachTo, AttachmentTransformRules );
+	
 }
 
 void APickupCube::Drop_Implementation()
 {
 	//TODO - Implement Drop Call
-}
+	StaticMeshComponent->SetSimulatePhysics( true );
+
+	FDetachmentTransformRules DetatchmentTransformRules( EDetachmentRule::KeepWorld, true );
+	DetachFromActor( DetatchmentTransformRules );}
