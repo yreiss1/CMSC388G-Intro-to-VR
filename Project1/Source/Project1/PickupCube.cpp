@@ -27,7 +27,7 @@ APickupCube::APickupCube()
 void APickupCube::Pickup_Implementation(USceneComponent* AttachTo)
 {
 	//TODO - Implement Pickup call
-	StaticMeshComponent->SetSimulatePhysics( false );
+	MeshComponent->SetSimulatePhysics( false );
 	USceneComponent *Root = GetRootComponent();
 
 	FAttachmentTransformRules AttachmentTransformRules( EAttachmentRule::KeepWorld, false );
@@ -38,7 +38,8 @@ void APickupCube::Pickup_Implementation(USceneComponent* AttachTo)
 void APickupCube::Drop_Implementation()
 {
 	//TODO - Implement Drop Call
-	StaticMeshComponent->SetSimulatePhysics( true );
+	MeshComponent->SetSimulatePhysics( true );
 
 	FDetachmentTransformRules DetatchmentTransformRules( EDetachmentRule::KeepWorld, true );
-	DetachFromActor( DetatchmentTransformRules );}
+	DetachFromActor( DetatchmentTransformRules );
+}
