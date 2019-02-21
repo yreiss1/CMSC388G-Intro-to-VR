@@ -17,13 +17,52 @@ ACustomMotionController::ACustomMotionController()
 
 void ACustomMotionController::ClearArc()
 {
-	//TODO - Clear blue laser arc every frame
+	FindComponentByClass<SplineMesh
+		
+	// Clear Arc
+	ArcPoints.Empty();
+	ArcSpline->ClearSplinePoints();
+
+	for (int32 i = 0; i < ArcSplineMeshes.Num(); i++)
+	{
+		if (ArcSplineMeshes[i])
+		{
+			ArcSplineMeshes[i]->DestroyComponent();
+		}
+	}
+
+	ArcSplineMeshes.Empty();	//TODO - Clear blue laser arc every frame
 }
 
 AActor* ACustomMotionController::GetActorNearHand()
 {
+	
+	TArray<AActor*> overlappingActors;
+
+	GrabSphere->GetOverlappingActors( overlappingActors );
+	FVector handLocation = GrabSphere->GetComponentLocation();
+
+	AActor* nearest = nullptr;
+	float mindist = 99999999999;
+
+	// Find closest overlaping actor
+	for ( AActor *actor : overlappingActors )
+	{
+		bool isPickupable = actor->GetClass()->ImplementsInterface( UPickupable::StaticClass() );
+		if ( isPickupable )
+		{
+
+			float dist = ( actor->GetActorLocation() - handLocation ).SizeSquared();
+			if ( dist < mindist )
+			{
+				mindist = dist;
+				nearest = actor;
+			}
+		}
+	}
+	
 	//TODO - Do something other than return null
-	return nullptr;
+	return nearest;
 }
 
 //Blueprint function that is converted to C++ for your convenience.
